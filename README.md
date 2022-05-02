@@ -16,7 +16,7 @@
 
 ## Joined Programming Instructions
 
-### Steps
+### Steps:
 1. When working on a replit project, there is a button on the top right side of the page called "Invite"
 2. When you click that button, you can click "generate a join link" and givve that to your groupmates to code on the same screen together
 3. You can also invite them by email, but the join link is easier
