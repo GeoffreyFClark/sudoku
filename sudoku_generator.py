@@ -100,14 +100,6 @@ class SudokuGenerator:
     '''
     def fill_box(self, row_start, col_start):
         pass
-
-    '''
-	TODO: put this in the pdf
-    Could also use random.randrange(1, num+1) or random.randint(1,num)
-    '''
-    def random_generator(self, num):
-        res = int(math.floor(random.random() * num + 1))
-        return res
     
     '''
     Fills the three boxes along the main diagonal of the board
