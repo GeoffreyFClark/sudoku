@@ -40,6 +40,7 @@ class SudokuGenerator:
 
     '''
 	Determines if num is contained in the specified row (horizontal) of the board
+    If num is already in the specified row, return False. Otherwise, return True
 
 	Parameters:
 	row is the index of the row we are checking
@@ -47,11 +48,12 @@ class SudokuGenerator:
 	
 	Return: boolean
     '''
-    def unused_in_row(self, row, num):
+    def valid_in_row(self, row, num):
         pass
 
     '''
 	Determines if num is contained in the specified column (vertical) of the board
+    If num is already in the specified col, return False. Otherwise, return True
 
 	Parameters:
 	col is the index of the column we are checking
@@ -59,11 +61,13 @@ class SudokuGenerator:
 	
 	Return: boolean
     '''
-    def unused_in_col(self, col, num):
+    def valid_in_col(self, col, num):
         pass
 
     '''
 	Determines if num is contained in the 3x3 box specified on the board
+    If num is in the specified box starting at (row_start, col_start), return False.
+    Otherwise, return True
 
 	Parameters:
 	row_start and col_start are the starting indices of the box to check
@@ -72,20 +76,20 @@ class SudokuGenerator:
 
 	Return: boolean
     '''
-    def unused_in_box(self, row_start, col_start, num):
+    def valid_in_box(self, row_start, col_start, num):
         pass
     
     '''
-    Determines if it is safe to enter num at coordinates (row, col) in the board
+    Determines if it is valid to enter num at (row, col) in the board
     This is done by checking that num is unused in the appropriate, row, column, and box
 
 	Parameters:
-	row and col are the coordinates of the cell to check in the board
+	row and col are the row index and col index of the cell to check in the board
 	num is the value to test if it is safe to enter in this cell
 
 	Return: boolean
     '''
-    def check_if_safe(self, row, col, num):
+    def is_valid(self, row, col, num):
         pass
 
     '''
@@ -112,6 +116,7 @@ class SudokuGenerator:
         pass
 
     '''
+    DO NOT CHANGE
     Provided for students
     Fills the remaining cells of the board
     Should be called after the diagonal boxes have been filled
@@ -150,6 +155,8 @@ class SudokuGenerator:
         return False
 
     '''
+    DO NOT CHANGE
+    Provided for students
     Constructs a solution by calling fill_diagonal and fill_remaining
 
 	Parameters: None
@@ -172,16 +179,11 @@ class SudokuGenerator:
 	Return: None
     '''
     def remove_cells(self):
-        count = self.removed_cells
-        while count != 0:
-            cell_num = random.randint(0, self.row_length * self.row_length - 1)
-            row = cell_num // self.row_length
-            col = cell_num % self.row_length
-            if self.board[row][col] != 0:
-                count -= 1
-                self.board[row][col] = 0
+        pass
 
 '''
+DO NOT CHANGE
+Provided for students
 Given a number of rows and number of cells to remove, this function:
 1. creates a SudokuGenerator
 2. fills its values and saves this as the solved state
