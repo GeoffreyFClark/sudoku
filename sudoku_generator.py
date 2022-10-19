@@ -147,7 +147,7 @@ class SudokuGenerator:
                     return True
         
         for num in range(1, self.row_length + 1):
-            if self.check_if_safe(row, col, num):
+            if self.is_valid(row, col, num):
                 self.board[row][col] = num
                 if self.fill_remaining(row, col + 1):
                     return True
