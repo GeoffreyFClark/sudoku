@@ -7,7 +7,7 @@
 ## REPLIT Instructions
 
 ### Steps:
-1. Go to [https://replit.com/~](https://link-url-here.org) and create a free account
+1. Go to [https://replit.com/~](https://replit.com/~) and create a free account
 2. In the top left corner of the home page, select the dropdown and click the 'Create' button
 3. In the Create window, click "Import from GitHub" in the top right corner of the box
 4. Copy and paste your github url from the base of your repository into the box, and click "Import from GitHub"
