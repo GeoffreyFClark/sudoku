@@ -8,7 +8,6 @@
 3. In the Create window, click "Import from GitHub" in the top right corner of the box
 4. Copy and paste your github url from the base of your repository into the box, and click "Import from GitHub"
 5. You should be able to run your pygame project in Replit as long as the main file is called "sudoku.py". If it is named something different, either rename it to 'sudoku.py' or change the run command in the 'main.sh' file to run your filename instead
-6. Happy Coding:)
 
 ## Joined Programming Instructions
 
