@@ -2,7 +2,7 @@
 
 Push updates to sudoku_generator.py.
 
-Note that sudoku_generator_template.py is intended to be our original template for reference purposes.
+Note sudoku_generator_template.py is a template for reference purposes.
 
 ## REPLIT Instructions
 
