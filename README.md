@@ -1,6 +1,7 @@
 # Sudoku-Project
 
-Push updates to sudoku_generator.py 
+Push updates to sudoku_generator.py
+
 Notesudoku_generator_template.py is a template for reference purposes.
 
 ## REPLIT Instructions
