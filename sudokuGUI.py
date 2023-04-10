@@ -34,7 +34,7 @@ def draw_game(): #display main menu
     return menu
 
 def make_menu(): #display game
-    pygame.draw.rect(screen, 'light blue', [0, 0, 800, 800])
+    pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
     mode_msg = font.render('Select a Game Mode', True, 'white')
     welcome_msg = font.render('Welcome to Sudoku!', True, 'white')
     screen.blit(welcome_msg, [275, 250])
