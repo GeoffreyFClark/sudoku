@@ -8,8 +8,6 @@ height = 800
 
 screen = pygame.display.set_mode([width, height])
 pygame.display.set_caption("Sudoku") #game title
-fps = 60
-timer = pygame.time.Clock() #time game will run
 main_menu = False
 font = pygame.font.Font('freesansbold.ttf', 24) #set font
 
@@ -70,7 +68,6 @@ def make_menu(): #display game
 run = True
 while run:
     screen.fill('light blue')
-    timer.tick(fps)
 
     if main_menu:
         main_menu = draw_game()
