@@ -12,6 +12,11 @@ main_menu = False
 font = pygame.font.Font('freesansbold.ttf', 24) #set font
 
 def draw_game(): #display main menu
+    #display board
+    board_img = pygame.image.load('Empty_Sudoku_Grid.png').convert_alpha()
+    board = pygame.transform.scale(board_img, (int(0.6 * board_img.get_width()), int(0.6 * board_img.get_height())))
+    screen.blit(board, [40, 70])
+
     #bring to main menu
     restart = pygame.draw.rect(screen, 'orange', [80, 30, 180, 60], 0, 5)  # [x,y, width, height]
     text_restart = font.render('Restart', True, 'white')
@@ -27,10 +32,14 @@ def draw_game(): #display main menu
     text_reset = font.render('Reset', True, 'white')
     screen.blit(text_reset, [600, 50])
 
+    menu = True
+
+    if exit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+        pygame.quit()
+
     if restart.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
         menu = False
-    else:
-        menu = True
+
     return menu
 
 def make_menu(): #display game
@@ -81,5 +90,3 @@ while run:
     pygame.display.flip() #put display on screen
 
 pygame.quit()
-
-
