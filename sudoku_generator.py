@@ -1,6 +1,8 @@
 import math, random
 import pygame
-
+from pygame.time import Clock
+import copy
+import time
 
 """
 This was adapted from a GeeksforGeeks article "Program for Sudoku Generator" by Aarti_Rathi and Ankur Trisal
@@ -120,22 +122,17 @@ class SudokuGenerator:
     '''
 
     def is_valid(self, row, col, num):
-        row_validity = self.valid_in_row(row, num)
-        col_validity = self.valid_in_col(col, num)
-        if 0 <= row <= 2:
-            row_start = 0
-        elif 3 <= row <= 5:
-            row_start = 3
-        elif 6 <= row <= 8:
-            row_start = 6
-        if 0 <= row <= 2:
-            col_start = 0
-        elif 3 <= row <= 5:
-            col_start = 3
-        elif 6 <= row <= 8:
-            col_start = 6
-        box_validity = self.valid_in_box(row_start, col_start, num)
-        return row_validity and col_validity  and box_validity
+        for i in range(self.row_length):
+            if self.board[row][i] == num or self.board[i][col] == num:
+                return False
+        row_start = (row // self.box_length) * self.box_length
+        col_start = (col // self.box_length) * self.box_length
+        for i in range(row_start, row_start + self.box_length):
+            for j in range(col_start, col_start + self.box_length):
+                if self.board[i][j] == num:
+                    return False
+        return True
+
 
     '''
     Fills the specified 3x3 box with values
@@ -149,13 +146,22 @@ class SudokuGenerator:
     '''
 
     def fill_box(self, row_start, col_start):
+        nums = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        random.shuffle(nums)  # shuffle the numbers to randomize the order of filling
         for i in range(0, 3):
             for j in range(0, 3):
-                while True:  # loop until fill the valid number
-                    ran_num = random.randint(1, 9)
-                    if self.is_valid(row_start, col_start, ran_num):
-                        self.board[row_start + i][col_start + j] = ran_num
-                        return
+                found_num = False
+                for num in nums:
+                    if self.is_valid(row_start + i, col_start + j, num):
+                        self.board[row_start + i][col_start + j] = num
+                        found_num = True
+                        break  # exit the loop when a valid number is found
+                if not found_num:
+                    # if no valid number is found for a cell, clear the box and start over
+                    self.clear_box(row_start, col_start)
+                    self.fill_box(row_start, col_start)
+                    return
+
 
     '''
     Fills the three boxes along the main diagonal of the board
@@ -201,7 +207,7 @@ class SudokuGenerator:
                 col = 0
                 if row >= self.row_length:
                     return True
-
+        
         for num in range(1, self.row_length + 1):
             if self.is_valid(row, col, num):
                 self.board[row][col] = num
@@ -214,14 +220,12 @@ class SudokuGenerator:
     DO NOT CHANGE
     Provided for students
     Constructs a solution by calling fill_diagonal and fill_remaining
-
 	Parameters: None
 	Return: None
     '''
-
     def fill_values(self):
         self.fill_diagonal()
-        self.fill_remaining(3, 0)
+        self.fill_remaining(0, self.box_length)
 
     '''
         Removes the appropriate number of cells from the board
@@ -267,14 +271,19 @@ def generate_sudoku(size, removed):
     sudoku = SudokuGenerator(size, removed)
     sudoku.fill_values()
     board = sudoku.get_board()
-    answer_board = board
+    solution_board = copy.deepcopy(board)
     sudoku.remove_cells()
     board = sudoku.get_board()
-    return board, answer_board
+    starting_board = copy.deepcopy(board)
+    return board, solution_board, starting_board
+
 
 
 def main():
     pygame.init()
+    event = pygame.event.poll()
+    clock = Clock()
+    clock.tick(20)
 
     width = 800
     height = 800
@@ -286,7 +295,7 @@ def main():
     selected_row = None
     selected_col = None
 
-    board, solution_board, working_board = [0], [0], None
+    board, solution_board, starting_board = [1], [2], [3]
 
     screen = pygame.display.set_mode([width, height])
     pygame.display.set_caption("Sudoku") #game title
@@ -298,20 +307,25 @@ def main():
         if main_menu:
             screen.fill('light blue')
 
-            #display board
+            #display boardlines
             for i in range(10):
                 if i % 3 == 0:
                     thickness = 4
                 else:
                     thickness = 1
-
-                # Draw horizontal line
                 pygame.draw.line(screen, "black", (GRID_TOP_LEFT[0], GRID_TOP_LEFT[1] + i * CELL_SIZE), 
-                                                    (GRID_TOP_LEFT[0] + GRID_WIDTH, GRID_TOP_LEFT[1] + i * CELL_SIZE), thickness)
-
-                # Draw vertical line
+                                                    (GRID_TOP_LEFT[0] + GRID_WIDTH, GRID_TOP_LEFT[1] + i * CELL_SIZE), thickness)  # Draw horizontal line
                 pygame.draw.line(screen, "black", (GRID_TOP_LEFT[0] + i * CELL_SIZE, GRID_TOP_LEFT[1]), 
-                                                    (GRID_TOP_LEFT[0] + i * CELL_SIZE, GRID_TOP_LEFT[1] + GRID_HEIGHT), thickness)
+                                                    (GRID_TOP_LEFT[0] + i * CELL_SIZE, GRID_TOP_LEFT[1] + GRID_HEIGHT), thickness)  # Draw vertical line
+
+
+            for row in range(len(board)): #  Display backend board numbers in PyGame GUI
+                for col in range(len(board)):
+                    if board[row][col] != 0:
+                        text = font.render(str(board[row][col]), True, 'black')
+                        text_rect = text.get_rect(center=((col * CELL_SIZE) + (CELL_SIZE // 2) + GRID_TOP_LEFT[0], 
+                                (row * CELL_SIZE) + (CELL_SIZE // 2) + GRID_TOP_LEFT[1]))
+                        screen.blit(text, text_rect)
 
             #bring to main menu
             restart = pygame.draw.rect(screen, 'orange', [80, 30, 180, 60], 0, 5)  # [x,y, width, height]
@@ -333,38 +347,46 @@ def main():
 
             if restart.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 main_menu = False
+                selected_row, selected_col = None, None
 
             if reset.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-                board = working_board
+                board = copy.deepcopy(starting_board)
 
-            for row in range(len(board)):
-                for col in range(len(board)):
-                    if board[row][col] != 0:
-                        text = font.render(str(board[row][col]), True, 'black')
-                        text_rect = text.get_rect(center=(col * 70 + 85, row * 70 + 123))
-                        screen.blit(text, text_rect)
-            # if event.type == pygame.MOUSEBUTTONDOWN:
-            #     mouse_pos = pygame.mouse.get_pos()
-            #     row = (mouse_pos[1] - GRID_TOP_LEFT[1]) // CELL_SIZE
-            #     col = (mouse_pos[0] - GRID_TOP_LEFT[0]) // CELL_SIZE
-            #     if 0 <= row < 9 and 0 <= col < 9 and working_board[row][col] == 0:
-            #         selected_row = row
-            #         selected_col = col
-            # if selected_row is not None and selected_col is not None:
-            #     rect = pygame.Rect(GRID_TOP_LEFT[0] + selected_col * CELL_SIZE, GRID_TOP_LEFT[1] + selected_row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-            #     pygame.draw.rect(screen, 'yellow', rect, 3)
-            # if event.type == pygame.KEYDOWN:
-            #     if selected_row is not None and selected_col is not None:
-            #         if event.unicode.isdigit():
-            #             working_board[selected_row][selected_col] = int(event.unicode)
-            #         elif event.key == pygame.K_BACKSPACE:
-            #             working_board[selected_row][selected_col] = 0
-            #         selected_row = None
-            #         selected_col = None
-
-            
-
-
+            if event.type == pygame.MOUSEBUTTONDOWN:  # Select cell
+                mouse_pos = pygame.mouse.get_pos()
+                row = (mouse_pos[1] - GRID_TOP_LEFT[1]) // CELL_SIZE
+                col = (mouse_pos[0] - GRID_TOP_LEFT[0]) // CELL_SIZE
+                if 0 <= row < 9 and 0 <= col < 9 and board[row][col] == 0:
+                    selected_row = row
+                    selected_col = col
+            if selected_row is not None and selected_col is not None:  # highlight cell
+                rect = pygame.Rect(GRID_TOP_LEFT[0] + selected_col * CELL_SIZE, GRID_TOP_LEFT[1] + selected_row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+                pygame.draw.rect(screen, 'yellow', rect, 3)
+                
+                
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if selected_row is not None and selected_col is not None:
+                        if event.key == pygame.K_1:
+                            board[selected_row][selected_col] = int(1)
+                        if event.key == pygame.K_2:
+                            board[selected_row][selected_col] = int(2)                        
+                        if event.key == pygame.K_3:
+                            board[selected_row][selected_col] = int(3)                    
+                        if event.key == pygame.K_4:
+                            board[selected_row][selected_col] = int(4)                        
+                        if event.key == pygame.K_5:
+                            board[selected_row][selected_col] = int(5)
+                        if event.key == pygame.K_6:
+                            board[selected_row][selected_col] = int(6)
+                        if event.key == pygame.K_7:
+                            board[selected_row][selected_col] = int(7)
+                        if event.key == pygame.K_8:
+                            board[selected_row][selected_col] = int(8)
+                        if event.key == pygame.K_9:
+                            board[selected_row][selected_col] = int(9)
+                        elif event.key == pygame.K_BACKSPACE:
+                            board[selected_row][selected_col] = 0
             
 
         else:
@@ -391,21 +413,22 @@ def main():
             if easy.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 main_menu = True
                 level = 30
+                board, solution_board, starting_board = generate_sudoku(9, level)
+                print(solution_board)
 
             if medium.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 main_menu = True
                 level = 40
+                board, solution_board, starting_board = generate_sudoku(9, level)
 
             if hard.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 main_menu = True
                 level = 50
+                board, solution_board, starting_board = generate_sudoku(9, level)
 
-            if level is not None:
-                # Generate a Sudoku solution and retrieve the board with cells removed and the solution board
-                board, solution_board = generate_sudoku(9, level)
-                working_board = board
 
-        if working_board == solution_board:
+
+        if board == solution_board:
             pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
             game_over = pygame.draw.rect(screen, 'orange', [270, 310, 270, 60], 0, 5)
             game_over_text = font.render('You Win! Go Again?', True, 'black')
