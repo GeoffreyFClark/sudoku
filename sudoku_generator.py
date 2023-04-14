@@ -283,6 +283,9 @@ def main():
     GRID_HEIGHT = CELL_SIZE * 9
     GRID_TOP_LEFT = (85, 123)
 
+    selected_row = None
+    selected_col = None
+
     board, solution_board, working_board = [0], [0], None
 
     screen = pygame.display.set_mode([width, height])
@@ -334,6 +337,36 @@ def main():
             if reset.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 board = working_board
 
+            for row in range(len(board)):
+                for col in range(len(board)):
+                    if board[row][col] != 0:
+                        text = font.render(str(board[row][col]), True, 'black')
+                        text_rect = text.get_rect(center=(col * 70 + 85, row * 70 + 123))
+                        screen.blit(text, text_rect)
+            # if event.type == pygame.MOUSEBUTTONDOWN:
+            #     mouse_pos = pygame.mouse.get_pos()
+            #     row = (mouse_pos[1] - GRID_TOP_LEFT[1]) // CELL_SIZE
+            #     col = (mouse_pos[0] - GRID_TOP_LEFT[0]) // CELL_SIZE
+            #     if 0 <= row < 9 and 0 <= col < 9 and working_board[row][col] == 0:
+            #         selected_row = row
+            #         selected_col = col
+            # if selected_row is not None and selected_col is not None:
+            #     rect = pygame.Rect(GRID_TOP_LEFT[0] + selected_col * CELL_SIZE, GRID_TOP_LEFT[1] + selected_row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+            #     pygame.draw.rect(screen, 'yellow', rect, 3)
+            # if event.type == pygame.KEYDOWN:
+            #     if selected_row is not None and selected_col is not None:
+            #         if event.unicode.isdigit():
+            #             working_board[selected_row][selected_col] = int(event.unicode)
+            #         elif event.key == pygame.K_BACKSPACE:
+            #             working_board[selected_row][selected_col] = 0
+            #         selected_row = None
+            #         selected_col = None
+
+            
+
+
+            
+
         else:
             pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
             mode_msg = font.render('Select a Game Mode', True, 'white')
@@ -371,13 +404,6 @@ def main():
                 # Generate a Sudoku solution and retrieve the board with cells removed and the solution board
                 board, solution_board = generate_sudoku(9, level)
                 working_board = board
-
-                for row in range(len(board)):
-                    for col in range(len(board)):
-                        if board[row][col] != 0:
-                            text = font.render(str(board[row][col]), True, 'black')
-                            text_rect = text.get_rect(center=(col * 50 + 80, row * 50 + 105))
-                            screen.blit(text, text_rect)
 
         if working_board == solution_board:
             pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
