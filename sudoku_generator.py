@@ -215,7 +215,6 @@ class SudokuGenerator:
                     return True
                 self.board[row][col] = 0
         return False
-
     '''
     DO NOT CHANGE
     Provided for students
@@ -291,6 +290,8 @@ def main():
     GRID_WIDTH = CELL_SIZE * 9
     GRID_HEIGHT = CELL_SIZE * 9
     GRID_TOP_LEFT = (85, 123)
+    font_size = 18  #SKETCH
+    font = pygame.font.Font(None, font_size)    #SKETCH
 
     selected_row = None
     selected_col = None
@@ -298,6 +299,7 @@ def main():
     board, solution_board, starting_board = [1], [2], [3]
 
     screen = pygame.display.set_mode([width, height])
+    sketch_surface = [[None for x in range(9)] for y in range(9)]
     pygame.display.set_caption("Sudoku") #game title
     main_menu = False
     font = pygame.font.Font('freesansbold.ttf', 24) #set font
@@ -361,12 +363,12 @@ def main():
                     selected_col = col
             if selected_row is not None and selected_col is not None:  # highlight cell
                 rect = pygame.Rect(GRID_TOP_LEFT[0] + selected_col * CELL_SIZE, GRID_TOP_LEFT[1] + selected_row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-                pygame.draw.rect(screen, 'yellow', rect, 3)
+                pygame.draw.rect(screen, 'red', rect, 3)
                 
                 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if selected_row is not None and selected_col is not None:
+                    #if selected_row is not None and selected_col is not None:
                         if event.key == pygame.K_1:
                             board[selected_row][selected_col] = int(1)
                         if event.key == pygame.K_2:
