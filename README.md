@@ -4,7 +4,7 @@ Push updates to sudoku_generator.py
 
 sudoku_generator_template.py exists for reference purposes.
 
-TODO: 1. Sketch System 2. Deliverables per PDF
+TODO: 1. Fix Game Over Loss Screen (may be useful to restructure pygame.event.get() scope and add pygame.event.poll() 2. Deliverables per PDF
 
 ## REPLIT Instructions
 
