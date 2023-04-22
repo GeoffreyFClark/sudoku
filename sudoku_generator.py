@@ -295,7 +295,9 @@ def main():
     selected_row = None
     selected_col = None
 
-    board, solution_board, starting_board = [1], [2], [3]
+    # initialize boards
+    board, solution_board, starting_board = [1], [2], [3]  
+    sketch_board = [[0 for x in range(9)] for y in range(9)]
 
     screen = pygame.display.set_mode([width, height])
     pygame.display.set_caption("Sudoku") #game title
@@ -304,7 +306,10 @@ def main():
 
     run = True
     while run:
+
+        # Misnomer, this actually displays the main game screen. TODO: Rename main_menu variable.
         if main_menu:
+
             screen.fill('light blue')
 
             #display boardlines
@@ -318,13 +323,18 @@ def main():
                 pygame.draw.line(screen, "black", (GRID_TOP_LEFT[0] + i * CELL_SIZE, GRID_TOP_LEFT[1]), 
                                                     (GRID_TOP_LEFT[0] + i * CELL_SIZE, GRID_TOP_LEFT[1] + GRID_HEIGHT), thickness)  # Draw vertical line
 
-
-            for row in range(len(board)): #  Display backend board numbers in PyGame GUI
+            #  Display backend board numbers in PyGame GUI
+            for row in range(len(board)): 
                 for col in range(len(board)):
                     if board[row][col] != 0:
                         text = font.render(str(board[row][col]), True, 'black')
                         text_rect = text.get_rect(center=((col * CELL_SIZE) + (CELL_SIZE // 2) + GRID_TOP_LEFT[0], 
                                 (row * CELL_SIZE) + (CELL_SIZE // 2) + GRID_TOP_LEFT[1]))
+                        screen.blit(text, text_rect)
+                    if sketch_board[row][col] != 0:
+                        text = font.render(str(sketch_board[row][col]), True, 'dark gray')
+                        text_rect = text.get_rect(center=((col * CELL_SIZE) + (14) + GRID_TOP_LEFT[0], 
+                                (row * CELL_SIZE) + (15) + GRID_TOP_LEFT[1]))
                         screen.blit(text, text_rect)
 
             #bring to main menu
@@ -348,47 +358,75 @@ def main():
             if restart.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 main_menu = False
                 selected_row, selected_col = None, None
+                level = None
 
             if reset.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 board = copy.deepcopy(starting_board)
+                sketch_board = [[0 for x in range(9)] for y in range(9)]
 
-            if event.type == pygame.MOUSEBUTTONDOWN:  # Select cell
+            # Select cell
+            if event.type == pygame.MOUSEBUTTONDOWN:  
                 mouse_pos = pygame.mouse.get_pos()
                 row = (mouse_pos[1] - GRID_TOP_LEFT[1]) // CELL_SIZE
                 col = (mouse_pos[0] - GRID_TOP_LEFT[0]) // CELL_SIZE
                 if 0 <= row < 9 and 0 <= col < 9 and board[row][col] == 0:
                     selected_row = row
                     selected_col = col
-            if selected_row is not None and selected_col is not None:  # highlight cell
+
+            # Highlight cell
+            if selected_row is not None and selected_col is not None:  
                 rect = pygame.Rect(GRID_TOP_LEFT[0] + selected_col * CELL_SIZE, GRID_TOP_LEFT[1] + selected_row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-                pygame.draw.rect(screen, 'yellow', rect, 3)
-                
-                
+                pygame.draw.rect(screen, 'red', rect, 3)
+
+            # Main event handler
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if selected_row is not None and selected_col is not None:
                         if event.key == pygame.K_1:
-                            board[selected_row][selected_col] = int(1)
+                            sketch_board[selected_row][selected_col] = int(1)
                         if event.key == pygame.K_2:
-                            board[selected_row][selected_col] = int(2)                        
+                            sketch_board[selected_row][selected_col] = int(2)                        
                         if event.key == pygame.K_3:
-                            board[selected_row][selected_col] = int(3)                    
+                            sketch_board[selected_row][selected_col] = int(3)                    
                         if event.key == pygame.K_4:
-                            board[selected_row][selected_col] = int(4)                        
+                            sketch_board[selected_row][selected_col] = int(4)                        
                         if event.key == pygame.K_5:
-                            board[selected_row][selected_col] = int(5)
+                            sketch_board[selected_row][selected_col] = int(5)
                         if event.key == pygame.K_6:
-                            board[selected_row][selected_col] = int(6)
+                            sketch_board[selected_row][selected_col] = int(6)
                         if event.key == pygame.K_7:
-                            board[selected_row][selected_col] = int(7)
+                            sketch_board[selected_row][selected_col] = int(7)
                         if event.key == pygame.K_8:
-                            board[selected_row][selected_col] = int(8)
+                            sketch_board[selected_row][selected_col] = int(8)
                         if event.key == pygame.K_9:
-                            board[selected_row][selected_col] = int(9)
-                        elif event.key == pygame.K_BACKSPACE:
-                            board[selected_row][selected_col] = 0
-            
-
+                            sketch_board[selected_row][selected_col] = int(9)
+                        if event.key == pygame.K_BACKSPACE:
+                            sketch_board[selected_row][selected_col] = 0
+                        if event.key == pygame.K_UP:
+                            for i in range(1, selected_row + 1):
+                                if board[selected_row - i][selected_col] == 0:
+                                    selected_row -= i
+                                    break
+                        if event.key == pygame.K_DOWN:
+                            for i in range(1, 9 - selected_row):
+                                if board[selected_row + i][selected_col] == 0:
+                                    selected_row += i
+                                    break
+                        if event.key == pygame.K_LEFT:
+                            for i in range(1, selected_col + 1):
+                                if board[selected_row][selected_col - i] == 0:
+                                    selected_col -= i
+                                    break
+                        if event.key == pygame.K_RIGHT:
+                            for i in range(1, 9 - selected_col):
+                                if board[selected_row][selected_col + i] == 0:
+                                    selected_col += i
+                                    break
+                        elif event.key == pygame.K_RETURN:
+                            board[selected_row][selected_col] = sketch_board[selected_row][selected_col]
+                            sketch_board[selected_row][selected_col] = 0
+        
+        # Displays actual main menu
         else:
             pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
             mode_msg = font.render('Select a Game Mode', True, 'white')
@@ -396,6 +434,7 @@ def main():
             screen.blit(welcome_msg, [275, 250])
             screen.blit(mode_msg, [275, 550])
 
+            # Displays easy, medium, and hard buttons
             easy = pygame.draw.rect(screen, 'orange', [80, 630, 180, 60], 0, 5)  # [x,y, width, height]
             text_easy = font.render('Easy', True, 'white')
             screen.blit(text_easy, [140, 650])
@@ -408,8 +447,9 @@ def main():
             text_hard = font.render('Hard', True, 'white')
             screen.blit(text_hard, [600, 650])
 
-            level = None  # initialize the level variable
+            level = None  
 
+            # Logic behind the easy, medium and hard buttons
             if easy.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 main_menu = True
                 level = 30
@@ -426,21 +466,51 @@ def main():
                 level = 50
                 board, solution_board, starting_board = generate_sudoku(9, level)
 
-
-
+        # Victory Screen
         if board == solution_board:
             pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
-            game_over = pygame.draw.rect(screen, 'orange', [270, 310, 270, 60], 0, 5)
+
+            game_over = pygame.draw.rect(screen, 'orange', [270, 290, 270, 60], 0, 5)
             game_over_text = font.render('You Win! Go Again?', True, 'black')
-            screen.blit(game_over_text, [290, 330])
+            screen.blit(game_over_text, [290, 310])
             if game_over.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-                main()
+                main_menu = False
+                selected_row, selected_col = None, None
+                level = None
+
+            game_over_quit = pygame.draw.rect(screen, 'orange', [345, 360, 120, 60], 0, 5)
+            game_over__quit_text = font.render('Quit', True, 'black')
+            screen.blit(game_over__quit_text, [375, 380])
+            if game_over_quit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 pygame.quit()
+            
+        # Loss Screen
+        # if no 0s in board:
+        #     if board != starting_board and level is not None:
+        #         if board != solution_board:
+
+        #             pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
+        #             game_over = pygame.draw.rect(screen, 'orange', [265, 290, 280, 60], 0, 5)
+        #             game_over_text = font.render('You Lose! Go Again?', True, 'black')
+        #             screen.blit(game_over_text, [286, 310])
+        #             if game_over.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+        #                 main_menu = False
+        #                 selected_row, selected_col = None, None
+        #                 level = None
+
+        #             game_over_quit = pygame.draw.rect(screen, 'orange', [345, 360, 120, 60], 0, 5)
+        #             game_over__quit_text = font.render('Quit', True, 'black')
+        #             screen.blit(game_over__quit_text, [376, 380])
+        #             if game_over_quit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+        #                 pygame.quit()
+
+        # Exits game. Structure could probably be made more concise. 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
 
-        pygame.display.flip() #put display on screen
+        # Display on screen
+        pygame.display.flip() 
 
     pygame.quit()
 
