@@ -2,7 +2,9 @@
 
 Push updates to sudoku_generator.py
 
-Notesudoku_generator_template.py is a template for reference purposes.
+sudoku_generator_template.py exists for reference purposes.
+
+TODO: 1. Sketch System 2. Deliverables per PDF
 
 ## REPLIT Instructions
 
