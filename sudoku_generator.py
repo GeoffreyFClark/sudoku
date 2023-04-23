@@ -133,7 +133,6 @@ class SudokuGenerator:
                     return False
         return True
 
-
     '''
     Fills the specified 3x3 box with values
     For each position, generates a random digit which has not yet been used in the box
@@ -161,7 +160,6 @@ class SudokuGenerator:
                     self.clear_box(row_start, col_start)
                     self.fill_box(row_start, col_start)
                     return
-
 
     '''
     Fills the three boxes along the main diagonal of the board
@@ -215,6 +213,7 @@ class SudokuGenerator:
                     return True
                 self.board[row][col] = 0
         return False
+    
     '''
     DO NOT CHANGE
     Provided for students
@@ -222,6 +221,7 @@ class SudokuGenerator:
 	Parameters: None
 	Return: None
     '''
+    
     def fill_values(self):
         self.fill_diagonal()
         self.fill_remaining(0, self.box_length)
@@ -248,7 +248,6 @@ class SudokuGenerator:
                 self.board[ran_row][ran_col] = 0
                 removed += 1
 
-
 '''
 DO NOT CHANGE
 Provided for students
@@ -265,7 +264,6 @@ removed is the number of cells to clear (set to 0)
 Return: list[list] (a 2D Python list to represent the board)
 '''
 
-
 def generate_sudoku(size, removed):
     sudoku = SudokuGenerator(size, removed)
     sudoku.fill_values()
@@ -277,13 +275,17 @@ def generate_sudoku(size, removed):
     return board, solution_board, starting_board
 
 
-
 def main():
     pygame.init()
-    font = pygame.font.Font('freesansbold.ttf', 24) #set font, font size
-    screen = pygame.display.set_mode([width, height])
-    pygame.display.set_caption("Sudoku") #game title
-    event = pygame.event.poll()
+
+    # Initialize boards and variables
+    board, solution_board, starting_board = [1], [2], [3]  
+    sketch_board = [[0 for x in range(9)] for y in range(9)]
+    selected_row = None
+    selected_col = None
+    game_screen = False
+    main_menu = True
+    run = True
 
     clock = Clock()
     clock.tick(20)
@@ -295,20 +297,16 @@ def main():
     GRID_HEIGHT = CELL_SIZE * 9
     GRID_TOP_LEFT = (85, 123)
 
-    # initialize boards and variables
-    board, solution_board, starting_board = [1], [2], [3]  
-    sketch_board = [[0 for x in range(9)] for y in range(9)]
-    selected_row = None
-    selected_col = None
-    game_screen = False
-    main_menu = True
-    run = True
+    font = pygame.font.Font('freesansbold.ttf', 24) #set font, font size
+    screen = pygame.display.set_mode([width, height])
+    pygame.display.set_caption("Sudoku") #game title
+    event = pygame.event.poll()
     
     while run:
         if game_screen:
             screen.fill('light blue')
 
-            #display boardlines
+            # Display boardlines
             for i in range(10):
                 if i % 3 == 0:
                     thickness = 4
@@ -333,7 +331,7 @@ def main():
                                 (row * CELL_SIZE) + (15) + GRID_TOP_LEFT[1]))
                         screen.blit(text, text_rect)
 
-            #bring to main menu
+            # Bring to main menu
             restart = pygame.draw.rect(screen, 'orange', [80, 30, 180, 60], 0, 5)  # [x,y, width, height]
             text_restart = font.render('Restart', True, 'white')
             screen.blit(text_restart, [125, 50])
@@ -344,14 +342,14 @@ def main():
                 level = None
                 sketch_board = [[0 for x in range(9)] for y in range(9)]
 
-            #quit program
+            # Quit program
             exit = pygame.draw.rect(screen, 'orange', [310, 30, 180, 60], 0, 5)  # [x,y, width, height]
             text_exit = font.render('Exit', True, 'white')
             screen.blit(text_exit, [375, 50])
             if exit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 pygame.quit()
 
-            #resets board
+            # Resets board
             reset = pygame.draw.rect(screen, 'orange', [540, 30, 180, 60], 0, 5)  # [x,y, width, height]
             text_reset = font.render('Reset', True, 'white')
             screen.blit(text_reset, [600, 50])
@@ -390,7 +388,7 @@ def main():
             if easy.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 game_screen = True
                 main_menu = False
-                level = 1
+                level = 30
                 board, solution_board, starting_board = generate_sudoku(9, level)
                 print(solution_board)
 
@@ -475,14 +473,14 @@ def main():
                                 game_screen = False
                                 main_menu = False
 
-                                game_over = pygame.draw.rect(screen, 'orange', [270, 290, 270, 60], 0, 5)
-                                game_over_text = font.render('You Win! Go Again?', True, 'black')
-                                screen.blit(game_over_text, [290, 310])
+                                game_over_go_again = pygame.draw.rect(screen, 'orange', [270, 290, 270, 60], 0, 5)
+                                game_over_go_again_text = font.render('You Win! Go Again?', True, 'black')
+                                screen.blit(game_over_go_again_text, [290, 310])
                                 pygame.display.flip() 
 
                                 game_over_quit = pygame.draw.rect(screen, 'orange', [345, 360, 120, 60], 0, 5)
-                                game_over__quit_text = font.render('Quit', True, 'black')
-                                screen.blit(game_over__quit_text, [375, 380])
+                                game_over_quit_text = font.render('Quit', True, 'black')
+                                screen.blit(game_over_quit_text, [375, 380])
 
                             # Loss Screen
                             if board != solution_board:
@@ -490,23 +488,23 @@ def main():
                                 game_screen = False
                                 main_menu = False
 
-                                game_over = pygame.draw.rect(screen, 'orange', [265, 290, 280, 60], 0, 5)
-                                game_over_text = font.render('You Lose! Go Again?', True, 'black')
-                                screen.blit(game_over_text, [286, 310])
+                                game_over_go_again = pygame.draw.rect(screen, 'orange', [265, 290, 280, 60], 0, 5)
+                                game_over_go_again_text = font.render('You Lose! Go Again?', True, 'black')
+                                screen.blit(game_over_go_again_text, [286, 310])
                                 pygame.display.flip() 
 
                                 game_over_quit = pygame.draw.rect(screen, 'orange', [345, 360, 120, 60], 0, 5)
-                                game_over__quit_text = font.render('Quit', True, 'black')
-                                screen.blit(game_over__quit_text, [376, 380])
-                                if game_over_quit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-                                    pygame.quit()
-                                    
+                                game_over_quit_text = font.render('Quit', True, 'black')
+                                screen.blit(game_over_quit_text, [376, 380])
+
             # Provide functionality to gameover screen buttons
             if main_menu == False and game_screen == False:
+                # Quit Button
                 if game_over_quit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                     pygame.quit()
 
-                if game_over.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+                # Go again button
+                if game_over_go_again.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                     game_screen = False
                     main_menu = True
                     selected_row, selected_col = None, None
