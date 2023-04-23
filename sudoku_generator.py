@@ -280,9 +280,13 @@ def generate_sudoku(size, removed):
 
 def main():
     pygame.init()
+    font = pygame.font.Font('freesansbold.ttf', 24) #set font, font size
+    screen = pygame.display.set_mode([width, height])
+    pygame.display.set_caption("Sudoku") #game title
+    event = pygame.event.poll()
+
     clock = Clock()
     clock.tick(20)
-    event = pygame.event.poll()
 
     width = 800
     height = 800
@@ -290,28 +294,18 @@ def main():
     GRID_WIDTH = CELL_SIZE * 9
     GRID_HEIGHT = CELL_SIZE * 9
     GRID_TOP_LEFT = (85, 123)
-    font_size = 18  #SKETCH
-    font = pygame.font.Font(None, font_size) #SKETCH
 
-    selected_row = None
-    selected_col = None
-
-    # initialize boards
+    # initialize boards and variables
     board, solution_board, starting_board = [1], [2], [3]  
     sketch_board = [[0 for x in range(9)] for y in range(9)]
-
-    screen = pygame.display.set_mode([width, height])
-    pygame.display.set_caption("Sudoku") #game title
-    font = pygame.font.Font('freesansbold.ttf', 24) #set font
-
+    selected_row = None
+    selected_col = None
     game_screen = False
     main_menu = True
     run = True
     
     while run:
-
         if game_screen:
-
             screen.fill('light blue')
 
             #display boardlines
@@ -343,20 +337,6 @@ def main():
             restart = pygame.draw.rect(screen, 'orange', [80, 30, 180, 60], 0, 5)  # [x,y, width, height]
             text_restart = font.render('Restart', True, 'white')
             screen.blit(text_restart, [125, 50])
-
-            #quit program
-            exit = pygame.draw.rect(screen, 'orange', [310, 30, 180, 60], 0, 5)  # [x,y, width, height]
-            text_exit = font.render('Exit', True, 'white')
-            screen.blit(text_exit, [375, 50])
-
-            #resets board
-            reset = pygame.draw.rect(screen, 'orange', [540, 30, 180, 60], 0, 5)  # [x,y, width, height]
-            text_reset = font.render('Reset', True, 'white')
-            screen.blit(text_reset, [600, 50])
-
-            if exit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-                pygame.quit()
-
             if restart.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 game_screen = False
                 main_menu = True
@@ -364,6 +344,17 @@ def main():
                 level = None
                 sketch_board = [[0 for x in range(9)] for y in range(9)]
 
+            #quit program
+            exit = pygame.draw.rect(screen, 'orange', [310, 30, 180, 60], 0, 5)  # [x,y, width, height]
+            text_exit = font.render('Exit', True, 'white')
+            screen.blit(text_exit, [375, 50])
+            if exit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+                pygame.quit()
+
+            #resets board
+            reset = pygame.draw.rect(screen, 'orange', [540, 30, 180, 60], 0, 5)  # [x,y, width, height]
+            text_reset = font.render('Reset', True, 'white')
+            screen.blit(text_reset, [600, 50])
             if reset.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 board = copy.deepcopy(starting_board)
                 sketch_board = [[0 for x in range(9)] for y in range(9)]
@@ -382,8 +373,6 @@ def main():
                 rect = pygame.Rect(GRID_TOP_LEFT[0] + selected_col * CELL_SIZE, GRID_TOP_LEFT[1] + selected_row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
                 pygame.draw.rect(screen, 'red', rect, 3)
 
-
-        
         # Displays main menu
         elif main_menu:
             pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
@@ -392,22 +381,12 @@ def main():
             screen.blit(welcome_msg, [275, 250])
             screen.blit(mode_msg, [275, 550])
 
-            # Displays easy, medium, and hard buttons
+            level = None
+
+            # Easy Button
             easy = pygame.draw.rect(screen, 'orange', [80, 630, 180, 60], 0, 5)  # [x,y, width, height]
             text_easy = font.render('Easy', True, 'white')
             screen.blit(text_easy, [140, 650])
-
-            medium = pygame.draw.rect(screen, 'orange', [310, 630, 180, 60], 0, 5)
-            text_med = font.render('Medium', True, 'white')
-            screen.blit(text_med, [355, 650])
-
-            hard = pygame.draw.rect(screen, 'orange', [540, 630, 180, 60], 0, 5)
-            text_hard = font.render('Hard', True, 'white')
-            screen.blit(text_hard, [600, 650])
-
-            level = None  
-
-            # Logic behind the easy, medium and hard buttons
             if easy.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 game_screen = True
                 main_menu = False
@@ -415,12 +394,20 @@ def main():
                 board, solution_board, starting_board = generate_sudoku(9, level)
                 print(solution_board)
 
+            # Medium Button
+            medium = pygame.draw.rect(screen, 'orange', [310, 630, 180, 60], 0, 5)
+            text_med = font.render('Medium', True, 'white')
+            screen.blit(text_med, [355, 650])
             if medium.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 game_screen = True
                 main_menu = False
                 level = 40
                 board, solution_board, starting_board = generate_sudoku(9, level)
 
+            # Hard Button
+            hard = pygame.draw.rect(screen, 'orange', [540, 630, 180, 60], 0, 5)
+            text_hard = font.render('Hard', True, 'white')
+            screen.blit(text_hard, [600, 650])
             if hard.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 game_screen = True
                 main_menu = False
@@ -479,14 +466,9 @@ def main():
                         print("ENTER")
                         print(board)
 
-                        # Check if Victory/Loss once board full
-                        # rowchecker = 0
-                        # for row in board:
-                        #     if 0 not in row:
-                        #         rowchecker += 1
-
-                        # if rowchecker == 9:
+                        # Check if Victory/Loss and load Game Over screen once board full
                         if all(0 not in row for row in board):
+
                             # Victory Screen
                             if board == solution_board:
                                 pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
@@ -518,6 +500,8 @@ def main():
                                 screen.blit(game_over__quit_text, [376, 380])
                                 if game_over_quit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                                     pygame.quit()
+                                    
+            # Provide functionality to gameover screen buttons
             if main_menu == False and game_screen == False:
                 if game_over_quit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                     pygame.quit()
