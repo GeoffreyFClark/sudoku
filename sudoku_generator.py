@@ -1,5 +1,3 @@
-# Link to private GitHub repository per pdf https://github.com/GeoffreyFClark/Sudoku_GroupProject
-
 import math, random
 import copy
 
