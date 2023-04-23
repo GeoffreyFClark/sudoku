@@ -280,9 +280,9 @@ def generate_sudoku(size, removed):
 
 def main():
     pygame.init()
-    event = pygame.event.poll()
     clock = Clock()
     clock.tick(20)
+    event = pygame.event.poll()
 
     width = 800
     height = 800
@@ -291,7 +291,7 @@ def main():
     GRID_HEIGHT = CELL_SIZE * 9
     GRID_TOP_LEFT = (85, 123)
     font_size = 18  #SKETCH
-    font = pygame.font.Font(None, font_size)    #SKETCH
+    font = pygame.font.Font(None, font_size) #SKETCH
 
     selected_row = None
     selected_col = None
@@ -301,16 +301,16 @@ def main():
     sketch_board = [[0 for x in range(9)] for y in range(9)]
 
     screen = pygame.display.set_mode([width, height])
-    sketch_surface = [[None for x in range(9)] for y in range(9)]
     pygame.display.set_caption("Sudoku") #game title
-    main_menu = False
     font = pygame.font.Font('freesansbold.ttf', 24) #set font
 
+    game_screen = False
+    main_menu = True
     run = True
+    
     while run:
 
-        # Misnomer, this actually displays the main game screen. TODO: Rename main_menu variable.
-        if main_menu:
+        if game_screen:
 
             screen.fill('light blue')
 
@@ -358,9 +358,11 @@ def main():
                 pygame.quit()
 
             if restart.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-                main_menu = False
+                game_screen = False
+                main_menu = True
                 selected_row, selected_col = None, None
                 level = None
+                sketch_board = [[0 for x in range(9)] for y in range(9)]
 
             if reset.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
                 board = copy.deepcopy(starting_board)
@@ -380,56 +382,10 @@ def main():
                 rect = pygame.Rect(GRID_TOP_LEFT[0] + selected_col * CELL_SIZE, GRID_TOP_LEFT[1] + selected_row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
                 pygame.draw.rect(screen, 'red', rect, 3)
 
-            # Main event handler
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    #if selected_row is not None and selected_col is not None:
-                        if event.key == pygame.K_1:
-                            sketch_board[selected_row][selected_col] = int(1)
-                        if event.key == pygame.K_2:
-                            sketch_board[selected_row][selected_col] = int(2)                        
-                        if event.key == pygame.K_3:
-                            sketch_board[selected_row][selected_col] = int(3)                    
-                        if event.key == pygame.K_4:
-                            sketch_board[selected_row][selected_col] = int(4)                        
-                        if event.key == pygame.K_5:
-                            sketch_board[selected_row][selected_col] = int(5)
-                        if event.key == pygame.K_6:
-                            sketch_board[selected_row][selected_col] = int(6)
-                        if event.key == pygame.K_7:
-                            sketch_board[selected_row][selected_col] = int(7)
-                        if event.key == pygame.K_8:
-                            sketch_board[selected_row][selected_col] = int(8)
-                        if event.key == pygame.K_9:
-                            sketch_board[selected_row][selected_col] = int(9)
-                        if event.key == pygame.K_BACKSPACE:
-                            sketch_board[selected_row][selected_col] = 0
-                        if event.key == pygame.K_UP:
-                            for i in range(1, selected_row + 1):
-                                if board[selected_row - i][selected_col] == 0:
-                                    selected_row -= i
-                                    break
-                        if event.key == pygame.K_DOWN:
-                            for i in range(1, 9 - selected_row):
-                                if board[selected_row + i][selected_col] == 0:
-                                    selected_row += i
-                                    break
-                        if event.key == pygame.K_LEFT:
-                            for i in range(1, selected_col + 1):
-                                if board[selected_row][selected_col - i] == 0:
-                                    selected_col -= i
-                                    break
-                        if event.key == pygame.K_RIGHT:
-                            for i in range(1, 9 - selected_col):
-                                if board[selected_row][selected_col + i] == 0:
-                                    selected_col += i
-                                    break
-                        elif event.key == pygame.K_RETURN:
-                            board[selected_row][selected_col] = sketch_board[selected_row][selected_col]
-                            sketch_board[selected_row][selected_col] = 0
+
         
-        # Displays actual main menu
-        else:
+        # Displays main menu
+        elif main_menu:
             pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
             mode_msg = font.render('Select a Game Mode', True, 'white')
             welcome_msg = font.render('Welcome to Sudoku!', True, 'white')
@@ -453,63 +409,127 @@ def main():
 
             # Logic behind the easy, medium and hard buttons
             if easy.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-                main_menu = True
-                level = 30
+                game_screen = True
+                main_menu = False
+                level = 1
                 board, solution_board, starting_board = generate_sudoku(9, level)
                 print(solution_board)
 
             if medium.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-                main_menu = True
+                game_screen = True
+                main_menu = False
                 level = 40
                 board, solution_board, starting_board = generate_sudoku(9, level)
 
             if hard.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-                main_menu = True
+                game_screen = True
+                main_menu = False
                 level = 50
                 board, solution_board, starting_board = generate_sudoku(9, level)
 
-        # Victory Screen
-        if board == solution_board:
-            pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
-
-            game_over = pygame.draw.rect(screen, 'orange', [270, 290, 270, 60], 0, 5)
-            game_over_text = font.render('You Win! Go Again?', True, 'black')
-            screen.blit(game_over_text, [290, 310])
-            if game_over.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-                main_menu = False
-                selected_row, selected_col = None, None
-                level = None
-
-            game_over_quit = pygame.draw.rect(screen, 'orange', [345, 360, 120, 60], 0, 5)
-            game_over__quit_text = font.render('Quit', True, 'black')
-            screen.blit(game_over__quit_text, [375, 380])
-            if game_over_quit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-                pygame.quit()
-            
-        # Loss Screen
-        # if no 0s in board:
-        #     if board != starting_board and level is not None:
-        #         if board != solution_board:
-
-        #             pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
-        #             game_over = pygame.draw.rect(screen, 'orange', [265, 290, 280, 60], 0, 5)
-        #             game_over_text = font.render('You Lose! Go Again?', True, 'black')
-        #             screen.blit(game_over_text, [286, 310])
-        #             if game_over.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-        #                 main_menu = False
-        #                 selected_row, selected_col = None, None
-        #                 level = None
-
-        #             game_over_quit = pygame.draw.rect(screen, 'orange', [345, 360, 120, 60], 0, 5)
-        #             game_over__quit_text = font.render('Quit', True, 'black')
-        #             screen.blit(game_over__quit_text, [376, 380])
-        #             if game_over_quit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-        #                 pygame.quit()
-
-        # Exits game. Structure could probably be made more concise. 
+        # Main event handler
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
+            if event.type == pygame.KEYDOWN:
+                if selected_row is not None and selected_col is not None:
+                    if event.type == pygame.QUIT:
+                        run = False
+                    if event.key == pygame.K_1:
+                        sketch_board[selected_row][selected_col] = int(1)
+                    if event.key == pygame.K_2:
+                        sketch_board[selected_row][selected_col] = int(2)                        
+                    if event.key == pygame.K_3:
+                        sketch_board[selected_row][selected_col] = int(3)                    
+                    if event.key == pygame.K_4:
+                        sketch_board[selected_row][selected_col] = int(4)                        
+                    if event.key == pygame.K_5:
+                        sketch_board[selected_row][selected_col] = int(5)
+                    if event.key == pygame.K_6:
+                        sketch_board[selected_row][selected_col] = int(6)
+                    if event.key == pygame.K_7:
+                        sketch_board[selected_row][selected_col] = int(7)
+                    if event.key == pygame.K_8:
+                        sketch_board[selected_row][selected_col] = int(8)
+                    if event.key == pygame.K_9:
+                        sketch_board[selected_row][selected_col] = int(9)
+                    if event.key == pygame.K_BACKSPACE:
+                        sketch_board[selected_row][selected_col] = 0
+                    if event.key == pygame.K_UP:
+                        for i in range(1, selected_row + 1):
+                            if board[selected_row - i][selected_col] == 0:
+                                selected_row -= i
+                                break
+                    if event.key == pygame.K_DOWN:
+                        for i in range(1, 9 - selected_row):
+                            if board[selected_row + i][selected_col] == 0:
+                                selected_row += i
+                                break
+                    if event.key == pygame.K_LEFT:
+                        for i in range(1, selected_col + 1):
+                            if board[selected_row][selected_col - i] == 0:
+                                selected_col -= i
+                                break
+                    if event.key == pygame.K_RIGHT:
+                        for i in range(1, 9 - selected_col):
+                            if board[selected_row][selected_col + i] == 0:
+                                selected_col += i
+                                break
+                    elif event.key == pygame.K_RETURN:
+                        board[selected_row][selected_col] = sketch_board[selected_row][selected_col]
+                        sketch_board[selected_row][selected_col] = 0
+                        print("ENTER")
+                        print(board)
+
+                        # Check if Victory/Loss once board full
+                        # rowchecker = 0
+                        # for row in board:
+                        #     if 0 not in row:
+                        #         rowchecker += 1
+
+                        # if rowchecker == 9:
+                        if all(0 not in row for row in board):
+                            # Victory Screen
+                            if board == solution_board:
+                                pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
+                                game_screen = False
+                                main_menu = False
+
+                                game_over = pygame.draw.rect(screen, 'orange', [270, 290, 270, 60], 0, 5)
+                                game_over_text = font.render('You Win! Go Again?', True, 'black')
+                                screen.blit(game_over_text, [290, 310])
+                                pygame.display.flip() 
+
+                                game_over_quit = pygame.draw.rect(screen, 'orange', [345, 360, 120, 60], 0, 5)
+                                game_over__quit_text = font.render('Quit', True, 'black')
+                                screen.blit(game_over__quit_text, [375, 380])
+
+                            # Loss Screen
+                            if board != solution_board:
+                                pygame.draw.rect(screen, 'dark blue', [0, 0, 800, 800])
+                                game_screen = False
+                                main_menu = False
+
+                                game_over = pygame.draw.rect(screen, 'orange', [265, 290, 280, 60], 0, 5)
+                                game_over_text = font.render('You Lose! Go Again?', True, 'black')
+                                screen.blit(game_over_text, [286, 310])
+                                pygame.display.flip() 
+
+                                game_over_quit = pygame.draw.rect(screen, 'orange', [345, 360, 120, 60], 0, 5)
+                                game_over__quit_text = font.render('Quit', True, 'black')
+                                screen.blit(game_over__quit_text, [376, 380])
+                                if game_over_quit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+                                    pygame.quit()
+            if main_menu == False and game_screen == False:
+                if game_over_quit.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+                    pygame.quit()
+
+                if game_over.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+                    game_screen = False
+                    main_menu = True
+                    selected_row, selected_col = None, None
+                    level = None
+                    sketch_board = [[0 for x in range(9)] for y in range(9)]
+                    pygame.display.flip()
+                    break
 
         # Display on screen
         pygame.display.flip() 
