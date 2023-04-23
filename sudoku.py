@@ -117,7 +117,7 @@ def main():
                 game_screen = True
                 main_menu = False
                 level = 30
-                board, solution_board, starting_board = sg.generate_sudoku(9, level)
+                board, solution_board, starting_board = sg.generate_sudoku_better(9, level)
                 print(solution_board) # For debugging purposes
 
             # Medium Button
@@ -128,7 +128,7 @@ def main():
                 game_screen = True
                 main_menu = False
                 level = 40
-                board, solution_board, starting_board = sg.generate_sudoku(9, level)
+                board, solution_board, starting_board = sg.generate_sudoku_better(9, level)
 
             # Hard Button
             hard = pygame.draw.rect(screen, 'orange', [540, 630, 180, 60], 0, 5)
@@ -138,7 +138,7 @@ def main():
                 game_screen = True
                 main_menu = False
                 level = 50
-                board, solution_board, starting_board = sg.generate_sudoku(9, level)
+                board, solution_board, starting_board = sg.generate_sudoku_better(9, level)
 
         # Main event handler
         for event in pygame.event.get():
