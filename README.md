@@ -2,8 +2,6 @@
 
 Run using sudoku.py
 
-Easy game mode prints solution_board in terminal for debugging.
-
 TODO: Deliverables per PDF
 
 ## REPLIT Instructions
