@@ -390,7 +390,7 @@ def main():
                 main_menu = False
                 level = 30
                 board, solution_board, starting_board = generate_sudoku(9, level)
-                print(solution_board)
+                print(solution_board) # For debugging purposes
 
             # Medium Button
             medium = pygame.draw.rect(screen, 'orange', [310, 630, 180, 60], 0, 5)
@@ -461,8 +461,6 @@ def main():
                     elif event.key == pygame.K_RETURN:
                         board[selected_row][selected_col] = sketch_board[selected_row][selected_col]
                         sketch_board[selected_row][selected_col] = 0
-                        print("ENTER")
-                        print(board)
 
                         # Check if Victory/Loss and load Game Over screen once board full
                         if all(0 not in row for row in board):
