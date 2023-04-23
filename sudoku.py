@@ -126,6 +126,12 @@ def main():
                 board = copy.deepcopy(starting_board)
                 sketch_board = [[0 for x in range(9)] for y in range(9)]
 
+        # Main event handler
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
             # Select cell
             if event.type == pygame.MOUSEBUTTONDOWN:  
                 mouse_pos = pygame.mouse.get_pos()
@@ -134,10 +140,7 @@ def main():
                 if 0 <= row < 9 and 0 <= col < 9:
                     selected_row, selected_col = row, col
 
-        # Main event handler
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
+            # Input sketched number into cell
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
                     if board[selected_row - i][selected_col] == 0:
@@ -169,6 +172,8 @@ def main():
                 if event.key == pygame.K_BACKSPACE:
                     if board[selected_row - i][selected_col] == 0:
                         sketch_board[selected_row][selected_col] = 0
+
+                # Move selected cell using arrow keys
                 if event.key == pygame.K_UP:
                     if selected_row >= 1:
                         selected_row -= 1
@@ -181,11 +186,13 @@ def main():
                 if event.key == pygame.K_RIGHT:
                     if selected_col <= 7:
                         selected_col += 1
+
+                # Input sketched number, locking it in
                 elif event.key == pygame.K_RETURN and sketch_board[selected_row][selected_col] != 0:
                     board[selected_row][selected_col] = sketch_board[selected_row][selected_col]
                     sketch_board[selected_row][selected_col] = 0
 
-                    # Check if Victory/Loss and load Game Over screen once board full
+                    # After inputting a number, check if Victory/Loss and load Game Over screen if board full
                     if all(0 not in row for row in board):
 
                         # Victory Screen
