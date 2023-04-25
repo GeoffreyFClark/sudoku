@@ -142,36 +142,27 @@ def main():
 
             # Input sketched number into cell
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_1:
-                    if board[selected_row - i][selected_col] == 0:
-                        sketch_board[selected_row][selected_col] = int(1)
-                if event.key == pygame.K_2:
-                    if board[selected_row - i][selected_col] == 0:
-                        sketch_board[selected_row][selected_col] = int(2)                        
-                if event.key == pygame.K_3:
-                    if board[selected_row - i][selected_col] == 0:
-                        sketch_board[selected_row][selected_col] = int(3)                    
-                if event.key == pygame.K_4:
-                    if board[selected_row - i][selected_col] == 0:
-                        sketch_board[selected_row][selected_col] = int(4)                        
-                if event.key == pygame.K_5:
-                    if board[selected_row - i][selected_col] == 0:
-                        sketch_board[selected_row][selected_col] = int(5)
-                if event.key == pygame.K_6:
-                    if board[selected_row - i][selected_col] == 0:
-                        sketch_board[selected_row][selected_col] = int(6)
-                if event.key == pygame.K_7:
-                    if board[selected_row - i][selected_col] == 0:
-                        sketch_board[selected_row][selected_col] = int(7)
-                if event.key == pygame.K_8:
-                    if board[selected_row - i][selected_col] == 0:
-                        sketch_board[selected_row][selected_col] = int(8)
-                if event.key == pygame.K_9:
-                    if board[selected_row - i][selected_col] == 0:
-                        sketch_board[selected_row][selected_col] = int(9)
-                if event.key == pygame.K_BACKSPACE:
-                    if board[selected_row - i][selected_col] == 0:
-                        sketch_board[selected_row][selected_col] = 0
+                if board[selected_row - i][selected_col] == 0:
+                    if event.key == pygame.K_1:
+                            sketch_board[selected_row][selected_col] = int(1)
+                    if event.key == pygame.K_2:
+                            sketch_board[selected_row][selected_col] = int(2)                        
+                    if event.key == pygame.K_3:
+                            sketch_board[selected_row][selected_col] = int(3)                    
+                    if event.key == pygame.K_4:
+                            sketch_board[selected_row][selected_col] = int(4)                        
+                    if event.key == pygame.K_5:
+                            sketch_board[selected_row][selected_col] = int(5)
+                    if event.key == pygame.K_6:
+                            sketch_board[selected_row][selected_col] = int(6)
+                    if event.key == pygame.K_7:
+                            sketch_board[selected_row][selected_col] = int(7)
+                    if event.key == pygame.K_8:
+                            sketch_board[selected_row][selected_col] = int(8)
+                    if event.key == pygame.K_9:
+                            sketch_board[selected_row][selected_col] = int(9)
+                    if event.key == pygame.K_BACKSPACE:
+                            sketch_board[selected_row][selected_col] = 0
 
                 # Move selected cell using arrow keys
                 if event.key == pygame.K_UP:
