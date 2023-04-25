@@ -2,6 +2,8 @@
 
 You can run using sudoku.py
 
+If using a terminal, be sure to navigate to the correct directory containing the .py files and .png
+
 TODO: Deliverables per PDF
 
 # Screenshots
