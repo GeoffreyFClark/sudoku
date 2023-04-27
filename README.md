@@ -4,8 +4,6 @@ You can run using sudoku.py
 
 If using a terminal, be sure to navigate to the correct directory containing the .py files and .jpg
 
-TODO: Deliverables per PDF
-
 # Screenshots
 
 ![image](https://user-images.githubusercontent.com/97141856/233831292-568215db-2614-45ff-8643-c14eade7af35.png)
