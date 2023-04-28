@@ -2,7 +2,7 @@
 
 You can run using sudoku.py
 
-If using a terminal, be sure to navigate to the correct directory containing the .py files and .jpg
+If using a terminal, be sure to navigate to the correct directory directly containing both the .py files and the UF_GATOR.jpg
 
 # Screenshots
 
